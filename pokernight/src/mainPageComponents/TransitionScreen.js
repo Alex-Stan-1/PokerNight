@@ -16,15 +16,13 @@ export default function TransitionScreen({ onTransitionComplete }) {
     const [fadeOut, setFadeOut] = useState(false);
 
     useEffect(() => {
-        // Start fade to black after last message appears
         const fadeTimeout = setTimeout(() => {
             setFadeOut(true);
-        }, messages.length * 2000 + 2000); // Adjust timing
+        }, messages.length * 2000 + 2000);
 
-        // Transition to main page after fade out completes
         const transitionTimeout = setTimeout(() => {
             onTransitionComplete();
-        }, messages.length * 2000 + 4000); // Extra time for fade-out effect
+        }, messages.length * 2000 + 4000);
 
         return () => {
             clearTimeout(fadeTimeout);
@@ -32,9 +30,13 @@ export default function TransitionScreen({ onTransitionComplete }) {
         };
     }, []);
 
+    const handleSkip = () => {
+        setFadeOut(true);
+        onTransitionComplete(); // ✅ Instantly transition after button press
+    };
+
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-black text-white text-center flex-col overflow-hidden">
-            {/* Transition Messages */}
             {messages.map((message, index) => (
                 <motion.h2
                     key={index}
@@ -47,28 +49,22 @@ export default function TransitionScreen({ onTransitionComplete }) {
                 </motion.h2>
             ))}
 
-            {/* Full-Screen Blackout for Transition */}
             {fadeOut && (
                 <motion.div
                     className="absolute inset-0 bg-black"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 2 }} // 2-second fade to black
+                    transition={{ duration: 0.5 }} // ✅ Faster fade effect
                 />
             )}
 
-            {/* Skip Button */}
-            {!fadeOut && (
-                <motion.button
-                    onClick={onTransitionComplete}
-                    className="absolute bottom-10 px-6 py-3 text-lg bg-[#d4af37] text-black rounded-lg shadow-md hover:bg-[#b8972d] transition-all"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 2 }}
-                >
-                    Skip Intro
-                </motion.button>
-            )}
+            {/* ✅ Skip Button - Higher, More Responsive, Dark Border */}
+            <button
+                onClick={handleSkip}
+                className="absolute bottom-16 left-1/2 transform -translate-x-1/2 text-sm text-gray-400 hover:text-white bg-black bg-opacity-50 border border-gray-700 px-4 py-2 rounded-md transition-opacity duration-200"
+            >
+                Skip
+            </button>
         </div>
     );
 }
