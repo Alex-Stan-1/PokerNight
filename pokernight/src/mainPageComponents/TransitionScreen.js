@@ -16,15 +16,13 @@ export default function TransitionScreen({ onTransitionComplete }) {
     const [fadeOut, setFadeOut] = useState(false);
 
     useEffect(() => {
-        // Start fade to black after last message appears
         const fadeTimeout = setTimeout(() => {
             setFadeOut(true);
-        }, messages.length * 2000 + 2000); // Adjust timing
+        }, messages.length * 2000 + 2000);
 
-        // Transition to main page after fade out completes
         const transitionTimeout = setTimeout(() => {
             onTransitionComplete();
-        }, messages.length * 2000 + 4000); // Extra time for fade-out effect
+        }, messages.length * 2000 + 4000);
 
         return () => {
             clearTimeout(fadeTimeout);
@@ -33,12 +31,12 @@ export default function TransitionScreen({ onTransitionComplete }) {
     }, []);
 
     return (
-        <div className="relative flex items-center justify-center min-h-screen bg-black text-white text-center flex-col overflow-hidden">
+        <div className="relative flex items-center justify-center min-h-screen bg-black text-white text-center flex-col overflow-hidden px-4">
             {/* Transition Messages */}
             {messages.map((message, index) => (
                 <motion.h2
                     key={index}
-                    className={`text-4xl md:text-6xl font-bold transition-message ${index === messages.length - 1 ? "text-[#d4af37] glow-text" : ""}`}
+                    className={`text-2xl md:text-4xl font-bold transition-message leading-tight ${index === messages.length - 1 ? "text-[#d4af37] glow-text" : ""}`}
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1.8, delay: index * 2 }}
@@ -53,15 +51,15 @@ export default function TransitionScreen({ onTransitionComplete }) {
                     className="absolute inset-0 bg-black"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 2 }} // 2-second fade to black
+                    transition={{ duration: 2 }}
                 />
             )}
 
-            {/* Skip Button */}
+            {/* Skip Button - Placed Higher for Mobile Accessibility */}
             {!fadeOut && (
                 <motion.button
                     onClick={onTransitionComplete}
-                    className="absolute bottom-10 px-6 py-3 text-lg bg-[#d4af37] text-black rounded-lg shadow-md hover:bg-[#b8972d] transition-all"
+                    className="absolute bottom-24 md:bottom-10 px-6 py-3 text-lg bg-[#d4af37] text-black rounded-lg shadow-md hover:bg-[#b8972d] transition-all"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 1, delay: 2 }}
