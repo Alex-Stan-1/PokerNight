@@ -31,7 +31,7 @@ export default function GameDetails() {
                 </p>
                 <p>
                     <strong className="text-[#d4af37]">⏰ Start Time: </strong>
-                    April 19th @ 6:00 PM
+                    May 2nd @ 6:00 PM
                 </p>
             </div>
         </motion.div>
