@@ -5,6 +5,7 @@ import { getPlayers, confirmRSVP } from "@/utils/firestore";
 export default function RSVPSection() {
     const [players, setPlayers] = useState([]);
     const [email, setEmail] = useState("");
+    const [modalMessage, setModalMessage] = useState(null);
 
     useEffect(() => {
         const fetchPlayers = async () => {
@@ -23,9 +24,9 @@ export default function RSVPSection() {
             setPlayers(players.map((player) =>
                 player.email === email ? { ...player, status: "confirmed" } : player
             ));
-            alert("RSVP Confirmed!");
+            setModalMessage({ text: "RSVP Confirmed! See you at the table.", type: "success" });
         } else {
-            alert("Email not found. Make sure you were invited!");
+            setModalMessage({ text: "Email not found. Make sure you were invited!", type: "error" });
         }
         setEmail("");
     };
@@ -45,18 +46,17 @@ export default function RSVPSection() {
                     />
                     <button
                         type="submit"
-                        className="w-full p-3 bg-[#6b4f4f] text-white rounded-lg hover:bg-[#7c5f5f]"
+                        className="w-full p-3 bg-[#6b4f4f] text-white rounded-lg hover:bg-[#7c5f5f] transition-all"
                     >
                         RSVP Now
                     </button>
                 </form>
             </div>
 
-            {/* PLAYERS LIST */}
+            {/* PLAYERS LIST (Reverted Back to Original) */}
             <div className="p-4 bg-[#1a1a1a] rounded-lg shadow-md">
                 <h3 className="text-2xl text-[#d4af37] mb-4">Pending & Confirmed Players</h3>
 
-                {/* Grid Layout for Players */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                     {players.map((player) => (
                         <div
@@ -80,6 +80,33 @@ export default function RSVPSection() {
                     ))}
                 </div>
             </div>
+
+            {/* Custom Modal */}
+            {modalMessage && (
+                <div
+                    className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+                    onClick={() => setModalMessage(null)}
+                >
+                    <div
+                        className={`p-6 rounded-lg shadow-lg text-center max-w-md mx-auto transition-all ${modalMessage.type === "success"
+                                ? "bg-[#1a1a1a] border-[#d4af37] text-[#d4af37]"
+                                : "bg-[#1a1a1a] border-red-500 text-red-500"
+                            } border-2`}
+                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+                    >
+                        <h2 className="text-xl font-bold mb-4">
+                            {modalMessage.type === "success" ? "You're In!" : "Oops!"}
+                        </h2>
+                        <p className="mb-6">{modalMessage.text}</p>
+                        <button
+                            onClick={() => setModalMessage(null)}
+                            className="px-6 py-2 bg-[#d4af37] text-black rounded-lg hover:bg-[#b8972d] transition-all"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
