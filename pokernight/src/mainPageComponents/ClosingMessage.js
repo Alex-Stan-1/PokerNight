@@ -20,7 +20,7 @@ export default function ClosingMessage() {
                 The Cards Are on the Table.
             </motion.h2>
 
-            {/* Fun & Lighthearted Closing Message */}
+            {/* Fun and Lighthearted Closing Message */}
             <motion.p
                 className="text-lg text-gray-300 leading-relaxed max-w-2xl mx-auto"
                 initial={{ opacity: 0 }}
