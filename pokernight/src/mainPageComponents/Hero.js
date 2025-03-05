@@ -23,9 +23,11 @@ export default function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1 }}
             >
-                The 1st Annual
+                The 1st
                 <br />
-                Stanimal’s Hold’em Invitational
+                Semi-Annual
+                <br />
+                Stanimal’s Invitational
             </motion.h1>
 
             {/* Description */}

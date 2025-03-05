@@ -10,22 +10,33 @@ export default function TransitionScreen({ onTransitionComplete }) {
         "Nevertheless",
         "You have chosen your fate",
         "WELCOME TO THE FIRST EVER",
-        "STANIMAL’S HOLD’EM INVITATIONAL"
     ];
 
-    const [fadeOut, setFadeOut] = useState(false);
+    const [fadeOutMessages, setFadeOutMessages] = useState(false);
+    const [showBlackout, setShowBlackout] = useState(false);
+    const [showInvitation, setShowInvitation] = useState(false);
 
     useEffect(() => {
-        const fadeTimeout = setTimeout(() => {
-            setFadeOut(true);
-        }, messages.length * 2000 + 2000);
+        const fadeMessagesTimeout = setTimeout(() => {
+            setFadeOutMessages(true);
+        }, messages.length * 2000 + 2000); // Delay before fading messages
+
+        const blackoutTimeout = setTimeout(() => {
+            setShowBlackout(true);
+        }, messages.length * 2000 + 2000); // Ensures messages fully fade out before blackout
+
+        const invitationTimeout = setTimeout(() => {
+            setShowInvitation(true);
+        }, messages.length * 2000 + 2000); // Show invitation after blackout
 
         const transitionTimeout = setTimeout(() => {
             onTransitionComplete();
-        }, messages.length * 2000 + 4000);
+        }, messages.length * 2000 + 10000); // Complete transition
 
         return () => {
-            clearTimeout(fadeTimeout);
+            clearTimeout(fadeMessagesTimeout);
+            clearTimeout(blackoutTimeout);
+            clearTimeout(invitationTimeout);
             clearTimeout(transitionTimeout);
         };
     }, []);
@@ -33,20 +44,32 @@ export default function TransitionScreen({ onTransitionComplete }) {
     return (
         <div className="relative flex items-center justify-center min-h-screen bg-black text-white text-center flex-col overflow-hidden px-4">
             {/* Transition Messages */}
-            {messages.map((message, index) => (
-                <motion.h2
-                    key={index}
-                    className={`text-2xl md:text-4xl font-bold transition-message leading-tight ${index === messages.length - 1 ? "text-[#d4af37] glow-text" : ""}`}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1.8, delay: index * 2 }}
-                >
-                    {message}
-                </motion.h2>
-            ))}
+            {!fadeOutMessages &&
+                messages.map((message, index) => (
+                    <motion.h2
+                        key={index}
+                        className="text-2xl md:text-4xl font-bold transition-message leading-tight"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1.8, delay: index * 2 }}
+                    >
+                        {message}
+                    </motion.h2>
+                ))}
 
-            {/* Full-Screen Blackout for Transition */}
-            {fadeOut && (
+            {/* Fade Out Effect for Messages */}
+            {fadeOutMessages && !showBlackout && (
+                <motion.div
+                    className="absolute inset-0 flex items-center justify-center bg-black"
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
+                    transition={{ duration: 2 }}
+                />
+            )}
+
+            {/* Full Blackout Before Invitation */}
+            {showBlackout && !showInvitation && (
                 <motion.div
                     className="absolute inset-0 bg-black"
                     initial={{ opacity: 0 }}
@@ -55,18 +78,35 @@ export default function TransitionScreen({ onTransitionComplete }) {
                 />
             )}
 
-            {/* Skip Button - Placed Higher for Mobile Accessibility */}
-            {!fadeOut && (
-                <motion.button
-                    onClick={onTransitionComplete}
-                    className="absolute bottom-24 md:bottom-10 px-6 py-3 text-lg bg-[#d4af37] text-black rounded-lg shadow-md hover:bg-[#b8972d] transition-all"
+            {/* Stanimal's Invitational Full-Screen Display */}
+            {showInvitation && (
+                <motion.div
+                    className="absolute inset-0 flex items-center justify-center bg-black text-[#d4af37] text-center"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 2 }}
+                    transition={{ duration: 3, ease: "easeInOut" }}
                 >
-                    Skip Intro
-                </motion.button>
+                    <motion.h1
+                        className="text-5xl md:text-7xl font-bold tracking-wider uppercase"
+                        initial={{ scale: 0.6, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 3, ease: "easeInOut" }}
+                    >
+                        STANIMAL’S INVITATIONAL
+                    </motion.h1>
+                </motion.div>
             )}
+
+            {/* Skip Button - Always Visible */}
+            <motion.button
+                onClick={onTransitionComplete}
+                className="absolute bottom-24 md:bottom-10 px-6 py-3 text-lg bg-[#d4af37] text-black rounded-lg shadow-md hover:bg-[#b8972d] transition-all"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 2 }}
+            >
+                Skip Intro
+            </motion.button>
         </div>
     );
 }

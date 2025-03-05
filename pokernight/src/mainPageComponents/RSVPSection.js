@@ -53,30 +53,40 @@ export default function RSVPSection() {
                 </form>
             </div>
 
-            {/* PLAYERS LIST (Reverted Back to Original) */}
+            {/* PLAYERS LIST */}
             <div className="p-4 bg-[#1a1a1a] rounded-lg shadow-md">
                 <h3 className="text-2xl text-[#d4af37] mb-4">Pending & Confirmed Players</h3>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                {/* Stanimal at the Top, Centered */}
+                <div className="flex justify-center mb-6">
+                    <div className="p-4 rounded-md flex flex-col items-center justify-center text-white border-2 border-[#d4af37] shadow-lg shadow-[#d4af37]/40">
+                        <span className="text-lg font-bold">Stanimal</span>
+                        <span className="text-sm">(Alex)</span>
+                        <span className="text-green-500">✅</span>
+                    </div>
+                </div>
+
+                {/* Two Rows of 4 Players */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-center">
                     {players.map((player) => (
-                        <div
-                            key={player.id}
-                            className={`p-3 rounded-md flex flex-col items-center justify-center ${player.status === "confirmed" ? "text-white" : "text-gray-500 opacity-60"
-                                }`}
-                        >
-                            <span className="text-lg font-bold">{player.alias || "Unknown"}</span>
-                            <span className="text-sm">({player.name || "Unnamed"})</span>
+                        player.alias !== "Stanimal" && (
+                            <div
+                                key={player.id}
+                                className={`p-2 rounded-md flex flex-col items-center justify-center 
+                                    ${player.status === "confirmed" ? "text-white" : "text-gray-500 opacity-60"}
+                                    border-2 border-gray-600 bg-[#222] transition-all`}
+                            >
+                                <span className="text-lg font-bold">{player.alias || "Unknown"}</span>
+                                <span className="text-sm">({player.name || "Unnamed"})</span>
 
-                            {/* Pending Players Get "..." */}
-                            {player.status === "pending" && (
-                                <span className="text-gray-400 animate-pulse">...</span>
-                            )}
-
-                            {/* Confirmed Players Get ✅ */}
-                            {player.status === "confirmed" && (
-                                <span className="text-green-500">✅</span>
-                            )}
-                        </div>
+                                {player.status === "pending" && (
+                                    <span className="text-gray-400 animate-pulse">...</span>
+                                )}
+                                {player.status === "confirmed" && (
+                                    <span className="text-green-500">✅</span>
+                                )}
+                            </div>
+                        )
                     ))}
                 </div>
             </div>
