@@ -41,7 +41,7 @@ export default function ClosingMessage() {
                 transition={{ duration: 1.5, delay: 1.5 }}
             >
                 <a
-                    href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+                    href="https://www.youtube.com/watch?v=j5a0jTc9S10&ab_channel=YourUncleMoe"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#d4af37] text-lg underline hover:text-white transition-all"
