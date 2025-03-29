@@ -80,7 +80,7 @@ export default function RSVPSection() {
 
                     return (
                         <>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-center mb-6">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-items-center mb-6">
                                 {gridPlayers.map((player) => (
                                     <div
                                         key={player.id}
