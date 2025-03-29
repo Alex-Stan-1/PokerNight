@@ -31,10 +31,16 @@ export default function RSVPSection() {
         setEmail("");
     };
 
+    // Utility: force line break on names with space
+    const formatAlias = (alias) => {
+        if (!alias) return "Unknown";
+        return alias.includes(" ") ? alias.split(" ").join("\n") : alias;
+    };
+
     return (
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#2b2b2b] p-6 rounded-lg shadow-xl text-center">
+        <div className="max-w-3xl mx-auto bg-[#1a1a1a] p-6 rounded-lg shadow-xl text-center">
             {/* RSVP FORM */}
-            <div className="p-4 bg-[#1a1a1a] rounded-lg shadow-md">
+            <div className="mb-8">
                 <h3 className="text-2xl text-[#d4af37] mb-4">Secure Your Seat</h3>
                 <form onSubmit={handleSubmit}>
                     <input
@@ -54,41 +60,71 @@ export default function RSVPSection() {
             </div>
 
             {/* PLAYERS LIST */}
-            <div className="p-4 bg-[#1a1a1a] rounded-lg shadow-md">
+            <div>
                 <h3 className="text-2xl text-[#d4af37] mb-4">Pending & Confirmed Players</h3>
 
                 {/* Stanimal at the Top, Centered */}
                 <div className="flex justify-center mb-6">
-                    <div className="p-4 rounded-md flex flex-col items-center justify-center text-white border-2 border-[#d4af37] shadow-lg shadow-[#d4af37]/40">
-                        <span className="text-lg font-bold">Stanimal</span>
+                    <div className="w-[130px] min-h-[130px] p-4 rounded-md flex flex-col items-center justify-center text-white border-2 border-[#d4af37] bg-[#222] shadow-lg text-center">
+                        <span className="text-lg font-bold whitespace-nowrap">Stanimal</span>
                         <span className="text-sm">(Alex)</span>
-                        <span className="text-green-500">✅</span>
+                        <span className="text-green-500 flex items-center justify-center h-full">✅</span>
                     </div>
                 </div>
 
-                {/* Two Rows of 4 Players */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-center">
-                    {players.map((player) => (
-                        player.alias !== "Stanimal" && (
-                            <div
-                                key={player.id}
-                                className={`p-2 rounded-md flex flex-col items-center justify-center 
-                                    ${player.status === "confirmed" ? "text-white" : "text-gray-500 opacity-60"}
-                                    border-2 border-gray-600 bg-[#222] transition-all`}
-                            >
-                                <span className="text-lg font-bold">{player.alias || "Unknown"}</span>
-                                <span className="text-sm">({player.name || "Unnamed"})</span>
+                {/* Grid of 8 players */}
+                {(() => {
+                    const nonStanimal = players.filter(p => p.alias !== "Stanimal");
+                    const gridPlayers = nonStanimal.slice(0, 8);
+                    const lastPlayer = nonStanimal[8];
 
-                                {player.status === "pending" && (
-                                    <span className="text-gray-400 animate-pulse">...</span>
-                                )}
-                                {player.status === "confirmed" && (
-                                    <span className="text-green-500">✅</span>
-                                )}
+                    return (
+                        <>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 justify-center mb-6">
+                                {gridPlayers.map((player) => (
+                                    <div
+                                        key={player.id}
+                                        className={`w-[130px] min-h-[130px] p-2 rounded-md flex flex-col items-center justify-center 
+                                            ${player.status === "confirmed" ? "text-white" : "text-gray-500 opacity-60"}
+                                            border-2 border-gray-600 bg-[#222] transition-all text-center break-words`}
+                                    >
+                                        <span className="text-lg font-bold whitespace-pre-line">{formatAlias(player.alias)}</span>
+                                        <span className="text-sm">({player.name || "Unnamed"})</span>
+                                        <span className="flex items-center justify-center h-full">
+                                            {player.status === "pending" ? (
+                                                <span className="text-gray-400 animate-pulse">...</span>
+                                            ) : (
+                                                <span className="text-green-500">✅</span>
+                                            )}
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
-                        )
-                    ))}
-                </div>
+
+                            {/* Last Player Centered Below */}
+                            {lastPlayer && (
+                                <div className="flex justify-center mb-6">
+                                    <div
+                                        key={lastPlayer.id}
+                                        className={`w-[130px] min-h-[130px] p-2 rounded-md flex flex-col items-center justify-center 
+                                            ${lastPlayer.status === "confirmed" ? "text-white" : "text-gray-500 opacity-60"}
+                                            border-2 border-gray-600 bg-[#222] transition-all text-center break-words`}
+                                    >
+                                        <span className="text-lg font-bold whitespace-pre-line">{formatAlias(lastPlayer.alias)}</span>
+                                        <span className="text-sm">({lastPlayer.name || "Unnamed"})</span>
+                                        <span className="flex items-center justify-center h-full">
+                                            {lastPlayer.status === "pending" ? (
+                                                <span className="text-gray-400 animate-pulse">...</span>
+                                            ) : (
+                                                <span className="text-green-500">✅</span>
+                                            )}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    );
+                })()}
             </div>
 
             {/* Custom Modal */}
@@ -99,10 +135,10 @@ export default function RSVPSection() {
                 >
                     <div
                         className={`p-6 rounded-lg shadow-lg text-center max-w-md mx-auto transition-all ${modalMessage.type === "success"
-                                ? "bg-[#1a1a1a] border-[#d4af37] text-[#d4af37]"
-                                : "bg-[#1a1a1a] border-red-500 text-red-500"
+                            ? "bg-[#1a1a1a] border-[#d4af37] text-[#d4af37]"
+                            : "bg-[#1a1a1a] border-red-500 text-red-500"
                             } border-2`}
-                        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <h2 className="text-xl font-bold mb-4">
                             {modalMessage.type === "success" ? "You're In!" : "Oops!"}
